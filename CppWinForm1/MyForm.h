@@ -59,7 +59,7 @@ namespace CppWinForm1 {
 		}
 		void ConvertButton_click(Object^ sender, EventArgs^ e) 
 		{
-			textField->Text = "";
+			textField->Text = "Каталог книг открыт\n";
 			XmlTextReader^ reader = gcnew XmlTextReader("1.xml");
 			while (reader->ReadToFollowing("catalog"))
 			{
@@ -73,41 +73,62 @@ namespace CppWinForm1 {
 						String^ author;
 						String^ title;
 						String^ Type;
-
+						String^ genre;
+						String^ price;
+						String^ date;
+						String^ description;
 						//Считываем атрибут
 						Type = reader->GetAttribute("id");
 
-						//Внутри точки есть тэги <x> и <y>.
+
 						//Вытащим все тэги в отдельное дерево
 						XmlReader^ inner = reader->ReadSubtree();
 
 						//И пробежимся по всем внутренностям данного поддерева точки
 						while (inner->Read())
 						{
-							//Если текущий элемент это открывающий тэг <x>,
-							//то следующий элемент - это текст внутри тэга <x></x>
+
 							if ((inner->Name == "author") && (inner->NodeType == XmlNodeType::Element))
 							{
-								//Поэтому считываем еще один элемент и этот элемент то, что нам нужно
 								inner->Read();
 								author = inner->Value;
 							}
-							//Если текущий элемент это открывающий тэг <y>,
-							//то следующий элемент - это текст внутри тэга <y></y>
 							if ((inner->Name == "title") && (inner->NodeType == XmlNodeType::Element))
 							{
-								//Поэтому считываем еще один элемент и этот элемент то, что нам нужно
 								inner->Read();
 								title = inner->Value;
+							}
+							if ((inner->Name == "genre") && (inner->NodeType == XmlNodeType::Element))
+							{
+								inner->Read();
+								genre = inner->Value;
+							}
+							if ((inner->Name == "price") && (inner->NodeType == XmlNodeType::Element))
+							{
+								inner->Read();
+								price = inner->Value;
+							}
+							if ((inner->Name == "publish_date") && (inner->NodeType == XmlNodeType::Element))
+							{
+								inner->Read();
+								date = inner->Value;
+							}
+							if ((inner->Name == "description") && (inner->NodeType == XmlNodeType::Element))
+							{
+								inner->Read();
+								description = inner->Value;
 							}
 						}
 
 						//Выведем считанную информацию 
 						textField->Text += "Книга №" + pointCount.ToString() + "\r\n";
 						textField->Text += "  ID = " + Type + "\r\n";
-						textField->Text += "  Author " + author + "\r\n";
-						textField->Text += "  Title " + title + "\r\n\n";
-
+						textField->Text += "  Author : \"" + author + "\"\r\n";
+						textField->Text += "  Title : \"" + title + "\"\r\n";
+						textField->Text += "  Genre : \"" + genre + "\"\r\n";
+						textField->Text += "  Date : " + date + "\r\n";
+						textField->Text += "  Price = " + price + "\r\n";
+						textField->Text += "  Description : \"" + description + "\"\r\n\n";
 					} while (reader->ReadToNextSibling("book"));
 				}
 			}
